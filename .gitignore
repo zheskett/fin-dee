@@ -1,6 +1,22 @@
 # MacOS
 .DS_Store
 
+# Codebook
+codebook.toml
+
+# Actual Budget data
+data/*
+
+# Sync Microservice
+sync-server/node_modules
+
+# Env files
+.env
+
+# Output files
+build/*
+dist/*
+
 # Compiled class file
 *.class
 

@@ -1,0 +1,37 @@
+services:
+  actual-server:
+    container_name: actualserver
+    image: actualbudget/actual-server:latest-alpine
+    ports:
+      - "5006:5006"
+    volumes:
+      - "./data/actual-server:/data:rw"
+    restart: unless-stopped
+
+  actual-api:
+    container_name: actualhttpapi
+    image: jhonderson/actual-http-api:latest
+    ports:
+      - "5007:5007"
+    env_file:
+      - path: ./.env
+        required: true
+    volumes:
+      - "./data/actual-http-api:/data:rw"
+    restart: unless-stopped
+    depends_on:
+      - actual-server
+
+  sync-server:
+    container_name: syncserver
+    build: ./sync-server
+    ports:
+      - "5008:5008"
+    env_file:
+      - path: ./.env
+        required: true
+    volumes:
+      - "./data/sync-server:/data:rw"
+    restart: unless-stopped
+    depends_on:
+      - actual-server

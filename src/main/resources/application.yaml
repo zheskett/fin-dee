@@ -1,0 +1,6 @@
+ktor:
+  deployment:
+    port: 6767
+  application:
+    modules:
+      - findee.AppKt.configureRouting

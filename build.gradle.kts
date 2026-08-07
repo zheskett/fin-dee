@@ -23,6 +23,11 @@ dependencies {
     implementation(libs.ktor.server.cio)
     implementation(libs.ktor.server.html.builder)
     implementation(libs.ktor.server.config.yaml)
+    implementation(libs.ktor.htmx)
+    implementation(libs.ktor.htmx.html)
+    implementation(libs.ktor.server.htmx)
+
+    implementation(libs.kotlinx.kotlinxHtml)
 
     implementation(libs.exposed.core)
     implementation(libs.exposed.jdbc)
@@ -39,4 +44,12 @@ kotlin {
 application {
     // Define the main class for the application.
     mainClass = "io.ktor.server.cio.EngineMain"
+}
+
+// Used by dev.sh to launch the app directly with `java`, bypassing Gradle's
+// daemon-managed JavaExec so a file watcher can reliably kill/restart it.
+tasks.register("printRuntimeClasspath") {
+    doLast {
+        println(sourceSets.main.get().runtimeClasspath.asPath)
+    }
 }

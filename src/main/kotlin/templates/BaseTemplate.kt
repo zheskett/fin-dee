@@ -14,6 +14,7 @@ class BaseTemplate<T : Template<FlowContent>>(private val inner: T) : Template<H
         head {
             title { +appName }
             link("/static/bulma.min.css", "stylesheet")
+            link("/static/fontawesome/css/all.min.css", "stylesheet")
             link("/static/styles.css", "stylesheet")
             link("/static/favicon.png", "icon", "image/png")
             meta("viewport", "width=device-width, initial-scale=1")

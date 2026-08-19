@@ -49,4 +49,5 @@ data class SimpleFinTransaction(
     val description: String,
     @SerialName("transacted_at") val transactedAt: Long? = null,
     val pending: Boolean = false,
+    // extra ignored
 )

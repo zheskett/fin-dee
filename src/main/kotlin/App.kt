@@ -15,6 +15,7 @@ fun Application.configureRouting() {
     routing {
         staticResources("/static", "static")
         baseRoutes()
+        hxRoutes()
     }
 }
 

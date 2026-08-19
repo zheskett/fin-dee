@@ -12,4 +12,10 @@ fun Route.baseRoutes() {
             insideContent {}
         }
     }
+
+    get("/debug") {
+        call.respondHtmlTemplate(BaseTemplate(DebugPage())) {
+            insideContent {}
+        }
+    }
 }

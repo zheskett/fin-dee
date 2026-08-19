@@ -1,15 +1,24 @@
+@font-face {
+    font-family: Maloney;
+    src: url(/static/Maloney.woff);
+}
+
 :root {
-  --bulma-primary-h: 135deg;
-  --bulma-primary-s: 100%;
-  --bulma-primary-l: 43%;
-  --bulma-link-h: 125deg;
-  --bulma-link-s: 80%;
-  --bulma-link-l: 35%;
-  --bulma-info-l: 61%;
-  --bulma-success-h: 141deg;
-  --bulma-success-s: 186%;
-  --bulma-success-l: 57%;
-  --bulma-warning-l: 51%;
-  --bulma-danger-h: 0deg;
-  --bulma-danger-l: 65%;
+    --bulma-primary-h: 135deg;
+    --bulma-primary-s: 100%;
+    --bulma-primary-l: 43%;
+    --bulma-link-h: 125deg;
+    --bulma-link-s: 80%;
+    --bulma-link-l: 35%;
+    --bulma-info-l: 61%;
+    --bulma-success-h: 141deg;
+    --bulma-success-s: 186%;
+    --bulma-success-l: 57%;
+    --bulma-warning-l: 51%;
+    --bulma-danger-h: 0deg;
+    --bulma-danger-l: 65%;
+}
+
+.is-family-maloney {
+    font-family: Maloney;
 }

@@ -4,3 +4,4 @@ ktor:
   application:
     modules:
       - findee.AppKt.configureRouting
+      - findee.AppKt.configureStatusPages

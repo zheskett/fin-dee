@@ -26,8 +26,8 @@ dependencies {
     implementation(libs.ktor.htmx)
     implementation(libs.ktor.htmx.html)
     implementation(libs.ktor.server.htmx)
-    implementation(libs.ktor.server.status.pages)
 
+    implementation(libs.ktor.server.status.pages)
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.content.negotiation)

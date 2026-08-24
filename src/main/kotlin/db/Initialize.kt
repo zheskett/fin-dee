@@ -6,6 +6,6 @@ import org.jetbrains.exposed.v1.jdbc.transactions.*
 
 fun createTables(db: Database) {
     transaction(db) {
-        SchemaUtils.create(UpdateTable)
+        SchemaUtils.create(UpdateTable, AccountTable, ConnectionTable, ErrorTable, inBatch = true)
     }
 }

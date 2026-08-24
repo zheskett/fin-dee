@@ -34,3 +34,10 @@ object ConnectionTable : Table("connections") {
 
     override val primaryKey = PrimaryKey(sfinId)
 }
+
+object ErrorTable : Table("errors") {
+    val id = integer("id").autoIncrement()
+    val updateId = reference("update_id", UpdateTable.id).index()
+    val code = varchar("code", 32)
+    val msg = text("msg", eagerLoading = true)
+}

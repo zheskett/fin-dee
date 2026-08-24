@@ -1,5 +1,7 @@
 package findee
 
+import findee.backend.client
+import findee.db.createTables
 import io.ktor.server.application.*
 import io.ktor.server.http.content.staticResources
 import io.ktor.server.response.*
@@ -10,6 +12,7 @@ import findee.templates.ErrorPage
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.html.respondHtmlTemplate
 import io.ktor.server.plugins.statuspages.*
+import org.jetbrains.exposed.v1.jdbc.*
 
 fun Application.configureRouting() {
     routing {
@@ -47,4 +50,16 @@ fun Application.configureStatusPages() {
             }
         }
     }
+}
+
+fun Application.monitors() {
+    monitor.subscribe(ApplicationStopped) {
+        client.close()
+    }
+}
+
+fun Application.dbConnect() {
+    val dbDir = environment.config.property("ktor.db.dir").getString()
+    val db = Database.connect("jdbc:h2:$dbDir/h2", "org.h2.Driver")
+    createTables(db)
 }

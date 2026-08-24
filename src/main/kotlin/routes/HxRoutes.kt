@@ -16,7 +16,13 @@ fun Route.hxRoutes() {
         hx {
             post("/refresh-page") {
                 call.response.header(HxResponseHeaders.Refresh, "true")
-                call.respond("")
+                call.respond(HttpStatusCode.NoContent)
+            }
+
+            post("/update") {
+                call.response.header(HxResponseHeaders.Refresh, "true")
+
+                call.respond(HttpStatusCode.NoContent)
             }
         }
     }

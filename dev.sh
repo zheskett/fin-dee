@@ -19,6 +19,12 @@ if ! command -v entr >/dev/null; then
     exit 1
 fi
 
+if [ -f .env.dev ]; then
+    set -a
+    source .env.dev
+    set +a
+fi
+
 echo "Resolving runtime classpath..."
 CLASSPATH=$(./gradlew -q printRuntimeClasspath)
 

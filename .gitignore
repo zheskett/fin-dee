@@ -12,6 +12,8 @@ data/*
 
 # Env files
 .env
+.env.*
+!.env.sample
 
 # Output files
 **/build/

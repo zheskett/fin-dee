@@ -8,6 +8,7 @@
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
     alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.ktor.plugin)
 
     // Apply the application plugin to add support for building a CLI application in Java.
     application
@@ -29,6 +30,7 @@ dependencies {
 
     implementation(libs.ktor.server.status.pages)
     implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.logging)
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.kotlinx.json)
@@ -37,6 +39,7 @@ dependencies {
 
     implementation(libs.exposed.core)
     implementation(libs.exposed.jdbc)
+    implementation(libs.exposed.kotlin.datetime)
     implementation(libs.h2)
 
     implementation(libs.logback.classic)

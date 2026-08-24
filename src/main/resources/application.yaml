@@ -1,7 +1,14 @@
 ktor:
   deployment:
-    port: 6767
+    port: ${PORT}
   application:
     modules:
       - findee.AppKt.configureRouting
       - findee.AppKt.configureStatusPages
+      - findee.AppKt.monitors
+      - findee.AppKt.dbConnect
+  
+  db:
+    dir: ${DB_DIR}
+  client:
+    simplefin_url: ${SIMPLEFIN_URL}

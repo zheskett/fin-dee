@@ -20,6 +20,15 @@ class DebugPage : Template<FlowContent> {
 
                         span { +"Refresh Page" }
                     }
+                    button(classes = "button") {
+                        attributes.hx {
+                            post = "/api/update"
+                            swap = "none"
+                        }
+                        span("icon") { i("fas fa-sync-alt") }
+
+                        span { +"Update SimpleFin" }
+                    }
                 }
             }
         }

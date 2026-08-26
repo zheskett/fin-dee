@@ -1,5 +1,6 @@
 package findee.routes
 
+import findee.backend.updateSimpleFin
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import findee.templates.*
@@ -21,7 +22,7 @@ fun Route.hxRoutes() {
 
             post("/update") {
                 call.response.header(HxResponseHeaders.Refresh, "true")
-
+                updateSimpleFin()
                 call.respond(HttpStatusCode.NoContent)
             }
         }

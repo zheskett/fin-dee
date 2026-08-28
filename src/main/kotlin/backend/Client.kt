@@ -1,14 +1,16 @@
 package findee.backend
 
 import findee.common.SimpleFinAccountSet
-import findee.db.storeUpdate
+import findee.db.*
 import io.ktor.client.*
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.ResponseException
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.config.ApplicationConfig
@@ -41,17 +43,26 @@ val client = HttpClient(CIO) {
     expectSuccess = true
 }
 
-suspend fun updateSimpleFin(startDate: OffsetDateTime? = null, balancesOnly: Boolean = true, pending: Boolean = true) {
-    val res = client.get("accounts") {
-        url {
-            parameters.append("version", "2")
-            parameters.append("balances-only", if (balancesOnly) "1" else "0")
-            parameters.append("pending", if (pending) "1" else "0")
-            val epochLong = startDate?.toEpochSecond() ?: OffsetDateTime.now().toEpochSecond()
-            parameters.append("start-date", epochLong.toString())
+suspend fun updateSimpleFin(
+    startDate: OffsetDateTime? = null,
+    balancesOnly: Boolean = true,
+    pending: Boolean = true
+): Boolean {
+    val res = try {
+        client.get("accounts") {
+            url {
+                parameters.append("version", "2")
+                parameters.append("balances-only", if (balancesOnly) "1" else "0")
+                parameters.append("pending", if (pending) "1" else "0")
+                val epochLong = startDate?.toEpochSecond() ?: OffsetDateTime.now().toEpochSecond()
+                parameters.append("start-date", epochLong.toString())
+            }
         }
+    } catch (e: ResponseException) {
+        storeUpdateError(e.message, e.response.status)
+        return false
     }
 
     val accountSet: SimpleFinAccountSet = res.body()
-    storeUpdate(accountSet, res.status)
+    return storeUpdate(accountSet, res.status)
 }

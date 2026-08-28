@@ -22,3 +22,11 @@
 .is-family-maloney {
     font-family: Maloney;
 }
+
+.modal {
+    justify-content: flex-start;
+}
+
+.modal-card {
+    margin-top: 10vh;
+}

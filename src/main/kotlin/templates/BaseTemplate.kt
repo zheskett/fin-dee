@@ -39,6 +39,20 @@ class BaseTemplate<T : Template<FlowContent>>(private val inner: T) : Template<H
                     }
                     div("navbar-end") {
                         div("navbar-item") {
+                            button(classes = "button") {
+                                attributes["hx-disable"] = "this"
+                                attributes.hx {
+                                    on("before:request", "this.classList.add('is-loading')")
+                                    on("finally:request", "this.classList.remove('is-loading')")
+                                    get = "/modal/update"
+                                    target = "body"
+                                    swap = "beforeend"
+                                }
+                                span("icon") { i("fas fa-sync") }
+                                span { +"Update" }
+                            }
+                        }
+                        div("navbar-item") {
                             a("/debug", classes = "button is-danger") {
                                 attributes.hx {
                                     boost = true
@@ -49,6 +63,7 @@ class BaseTemplate<T : Template<FlowContent>>(private val inner: T) : Template<H
                     }
                 }
             }
+
             insert(inner, insideContent)
         }
     }

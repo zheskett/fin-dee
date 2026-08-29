@@ -1,7 +1,10 @@
 package findee.common
 
-import java.time.Duration
-import java.time.OffsetDateTime
+import java.math.BigDecimal
+import java.text.NumberFormat
+import java.time.*
+
+val moneyFormat: NumberFormat = NumberFormat.getCurrencyInstance()
 
 fun getDurationString(t1: OffsetDateTime?, t2: OffsetDateTime?): String {
     if (t1 == null || t2 == null) return "never"

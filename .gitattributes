@@ -10,3 +10,5 @@
 # Binary files should be left untouched
 *.jar           binary
 
+resources/static/fontawesome/** linguist-vendored
+/gradlew linguist-vendored

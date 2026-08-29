@@ -1,14 +1,15 @@
 package findee.routes
 
+import findee.db.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import findee.templates.*
 import io.ktor.server.html.*
-import kotlinx.html.div
 
 fun Route.baseRoutes() {
     get("/") {
-        call.respondHtmlTemplate(BaseTemplate(HomePage())) {
+        val accounts = getLatestAccounts()
+        call.respondHtmlTemplate(BaseTemplate(HomePage(accounts))) {
             insideContent {}
         }
     }

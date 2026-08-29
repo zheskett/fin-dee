@@ -1,5 +1,6 @@
 package findee.db
 
+import findee.common.AccountType
 import org.jetbrains.exposed.v1.core.*
 import org.jetbrains.exposed.v1.datetime.CurrentTimestampWithTimeZone
 import org.jetbrains.exposed.v1.datetime.timestampWithTimeZone
@@ -14,18 +15,23 @@ object UpdateTable : Table("updates") {
     override val primaryKey = PrimaryKey(id)
 }
 
-object AccountTable : Table("accounts") {
-    val sfinId = varchar("sfin_id", 64).index()
-    val updateId = reference("update_id", UpdateTable.id)
-    val name = varchar("name", MAX_VARCHAR)
+object AccountUpdateTable : Table("account_updates") {
+    val actId = reference("act_id", AccountTable.sfinId)
+    val updateId = reference("update_id", UpdateTable.id).index()
     val balance = decimal("balance", 15, 2)
-    val connectionId = reference("connection_id", ConnectionTable.sfinId)
 
-    init {
-        index(false, updateId, connectionId)
-    }
+    override val primaryKey = PrimaryKey(actId, updateId)
+}
 
-    override val primaryKey = PrimaryKey(sfinId, updateId)
+object AccountTable : Table("accounts") {
+    val sfinId = varchar("sfin_id", 64)
+    val connId = reference("conn_id", ConnectionTable.sfinId).index()
+    val name = varchar("name", MAX_VARCHAR)
+    val alias = varchar("alias", MAX_VARCHAR).nullable().default(null)
+    val color = char("color", 6).check { it regexp "^[0-9a-fA-F]{6}$" }
+    val type = enumeration("type", AccountType::class).default(AccountType.CHECKING)
+
+    override val primaryKey = PrimaryKey(sfinId)
 }
 
 object ConnectionTable : Table("connections") {

@@ -19,6 +19,7 @@ class BaseTemplate<T : Template<FlowContent>>(private val inner: T) : Template<H
             link("/static/favicon.png", "icon", "image/png")
             meta("viewport", "width=device-width, initial-scale=1")
             script("text/javascript", "/static/htmx.min.js") {}
+            script("text/javascript", "/static/fontawesome/attribution.js") {}
         }
 
         body {

@@ -11,4 +11,5 @@
 *.jar           binary
 
 resources/static/fontawesome/** linguist-vendored
-/gradlew linguist-vendored
+./gradlew linguist-vendored
+*.sh linguist-detectable=false

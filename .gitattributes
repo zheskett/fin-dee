@@ -10,6 +10,6 @@
 # Binary files should be left untouched
 *.jar           binary
 
-resources/static/fontawesome/** linguist-vendored
+src/main/resources/static/fontawesome/** linguist-vendored
 ./gradlew linguist-vendored
 *.sh linguist-detectable=false

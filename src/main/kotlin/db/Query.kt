@@ -7,6 +7,7 @@ import org.jetbrains.exposed.v1.datetime.CurrentTimestampWithTimeZone
 import org.jetbrains.exposed.v1.jdbc.*
 import org.jetbrains.exposed.v1.jdbc.transactions.*
 import java.math.BigDecimal
+import java.time.Duration
 import java.time.OffsetDateTime
 
 fun createTables(db: Database) {
@@ -82,5 +83,13 @@ suspend fun getLastUpdateTime(): OffsetDateTime? {
         UpdateTable.select(UpdateTable.createdAt).limit(1).orderBy(UpdateTable.createdAt to SortOrder.DESC).map {
             it[UpdateTable.createdAt]
         }.getOrNull(0)
+    }
+}
+
+suspend fun getNumUpdatesSinceTime(dur: OffsetDateTime): Long {
+    return suspendTransaction {
+        UpdateTable.selectAll().where {
+            UpdateTable.createdAt greaterEq dur
+        }.count()
     }
 }

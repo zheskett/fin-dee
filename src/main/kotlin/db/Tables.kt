@@ -9,7 +9,7 @@ private const val MAX_VARCHAR = 128
 object UpdateTable : Table("updates") {
     val id = integer("id").autoIncrement()
     val httpCode = integer("http_code")
-    val createdAt = timestampWithTimeZone("created_at")
+    val createdAt = timestampWithTimeZone("created_at").index()
         .defaultExpression(CurrentTimestampWithTimeZone)
     override val primaryKey = PrimaryKey(id)
 }

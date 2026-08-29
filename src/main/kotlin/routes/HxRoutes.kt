@@ -1,7 +1,9 @@
 package findee.routes
 
 import findee.backend.updateSimpleFin
+import findee.common.getDurationString
 import findee.db.getLastUpdateTime
+import findee.db.getNumUpdatesSinceTime
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import findee.templates.*
@@ -13,6 +15,7 @@ import io.ktor.server.htmx.*
 import io.ktor.server.request.requireHeader
 import io.ktor.utils.io.ExperimentalKtorApi
 import kotlinx.html.*
+import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalKtorApi::class)
@@ -20,9 +23,9 @@ fun Route.hxRoutes() {
     route("modal") {
         hx {
             get("/update") {
-                val lastUpdate = getLastUpdateTime()?.format(
-                    DateTimeFormatter.ofPattern("EEEE, MMM d 'at' h:mm a")
-                ) ?: "Never"
+                val lastUpdate = getLastUpdateTime()
+                val updatesIn24Hrs = getNumUpdatesSinceTime(OffsetDateTime.now().minusHours(24))
+                val now = OffsetDateTime.now()
                 call.respondHtmlFragment {
                     insert(Modal()) {
                         modalTitle { +"Update SimpleFIN?" }
@@ -33,7 +36,11 @@ fun Route.hxRoutes() {
                                     br {}
                                     +"Going beyond that limit may result in a SimpleFIN suspension."
                                 }
-                                p { +"Last Update: $lastUpdate" }
+                                p {
+                                    +"Last Update: ${getDurationString(lastUpdate, now)}"
+                                    br {}
+                                    +"Updates in past 24hrs: $updatesIn24Hrs"
+                                }
                             }
                         }
                         modalConfirm {

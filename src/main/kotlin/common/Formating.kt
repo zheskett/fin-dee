@@ -32,6 +32,15 @@ fun getDurationString(t1: OffsetDateTime?, t2: OffsetDateTime?): String {
     return "now"
 }
 
+fun calcTextColorClass(bgColor: String): String {
+    val r = bgColor.substring(0, 2).hexToInt()
+    val g = bgColor.substring(2, 4).hexToInt()
+    val b = bgColor.substring(4, 6).hexToInt()
+    val lum = (299 * r + 587 * g + 114 * b) / 1000
+
+    return if (lum > 125) "has-text-grey-darker" else "has-text-white-ter"
+}
+
 private fun pl(x: Number, s: String): String {
     return if (x != 1) "${s}s" else s
 }

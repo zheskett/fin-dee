@@ -1,6 +1,6 @@
 package findee.templates
 
-import findee.common.Account
+import findee.common.*
 import io.ktor.htmx.html.hx
 import io.ktor.server.html.*
 import io.ktor.utils.io.ExperimentalKtorApi
@@ -15,14 +15,52 @@ class AccountSettingsModal(val account: Account) : Template<FlowContent> {
                 div("block") {
                     form {
                         id = "account-settings-form"
-                        label {
-                            attributes["for"] = "asf-alias"
-                            span("icon mr-1") { i("fa-solid fa-id-card") }
-                            span { +"Alias" }
+                        div("field") {
+                            label("label") {
+                                attributes["for"] = "asf-alias"
+                                span("icon mr-1") { i("fa-solid fa-id-card") }
+                                span { +"Alias" }
+                            }
+                            div("control") {
+                                input(InputType.text, name = "alias", classes = "input") {
+                                    placeholder = account.name
+                                    value = account.alias ?: ""
+                                }
+                            }
                         }
-                        input(InputType.text, name = "alias", classes = "input") {
-                            placeholder = account.name
-                            value = account.alias ?: ""
+                        div("field") {
+                            label("label") {
+                                attributes["for"] = "asf-type"
+                                span("icon mr-1") { i("fa-solid fa-sack-dollar") }
+                                span { +"Account Type" }
+                            }
+                            div("control") {
+                                div("select") {
+                                    select {
+                                        id = "asf-type"
+                                        name = "type"
+                                        for (at in AccountType.entries) {
+                                            option {
+                                                selected = account.type == at
+                                                +at.decode
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        div("field") {
+                            label("label") {
+                                attributes["for"] = "asf-color"
+                                span("icon mr-1") { i("fa-solid fa-palette") }
+                                span { +"Color" }
+                            }
+                            div("control") {
+                                input(InputType.color, name = "color", classes = "input") {
+                                    style = "width: 8.5rem;"
+                                    value = "#${account.color}"
+                                }
+                            }
                         }
                     }
                 }

@@ -1,20 +1,18 @@
 package findee.routes
 
-import findee.backend.updateSimpleFin
-import findee.common.getDurationString
-import findee.db.getAccountSettings
-import findee.db.getLastUpdateTime
-import findee.db.getNumUpdatesSinceTime
+import findee.backend.*
+import findee.common.*
+import findee.db.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import findee.templates.*
 import io.ktor.htmx.HxResponseHeaders
 import io.ktor.htmx.html.hx
 import io.ktor.http.*
-import io.ktor.server.application.log
+import io.ktor.server.application.*
 import io.ktor.server.html.*
 import io.ktor.server.htmx.*
-import io.ktor.server.request.requireHeader
+import io.ktor.server.request.*
 import io.ktor.utils.io.ExperimentalKtorApi
 import kotlinx.html.*
 import java.time.OffsetDateTime
@@ -60,7 +58,7 @@ fun Route.hxRoutes() {
             }
 
             get("/account-settings/{sfinId}") {
-                val sfinId = call.pathParameters["sfinId"]
+                val sfinId = call.pathParameters["sfinId"]!!
                 val account = getAccountSettings(sfinId)
                 call.respondHtmlFragment {
                     insert(AccountSettingsModal(account!!)) {}
@@ -78,6 +76,20 @@ fun Route.hxRoutes() {
 
             post("/update") {
                 val ok = updateSimpleFin()
+                call.response.header(HxResponseHeaders.Refresh, "true")
+                call.respond(if (ok) HttpStatusCode.NoContent else HttpStatusCode.InternalServerError)
+            }
+
+            post("/account-settings/{sfinId}") {
+                val sfinId = call.pathParameters["sfinId"]!!
+                val params = call.receiveParameters()
+                val alias =
+                    if ((params["alias"] ?: "").isEmpty()) null
+                    else params["alias"]
+                val type = AccountType.fromDecode(params["type"]!!)!!
+                val color = params["color"]!!.substring(1)
+
+                val ok = updateAccountSettings(sfinId, alias, type, color)
                 call.response.header(HxResponseHeaders.Refresh, "true")
                 call.respond(if (ok) HttpStatusCode.NoContent else HttpStatusCode.InternalServerError)
             }

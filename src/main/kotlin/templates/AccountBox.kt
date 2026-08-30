@@ -1,19 +1,27 @@
 package findee.templates
 
-import findee.common.Account
+import findee.common.*
 import io.ktor.htmx.html.hx
 import io.ktor.server.html.*
 import io.ktor.utils.io.ExperimentalKtorApi
 import kotlinx.html.*
 
 class AccountBox(val account: Account) : Template<FlowContent> {
+    val textColorClass = calcTextColorClass(account.color)
+
     @OptIn(ExperimentalKtorApi::class)
     override fun FlowContent.apply() {
         div("block container is-max-desktop") {
             article("message") {
-                div("message-header") {
-                    p("is-size-5") {
-                        +(account.alias ?: account.name)
+                div("message-header account-header $textColorClass") {
+                    style = "--account-color: #${account.color};"
+                    div {
+                        p("is-size-5") {
+                            +(account.alias ?: account.name)
+                        }
+                        p("is-size-7 has-text-weight-medium is-italic") {
+                            +(account.connName)
+                        }
                     }
                     div("buttons") {
                         button(classes = "button") {
@@ -29,7 +37,7 @@ class AccountBox(val account: Account) : Template<FlowContent> {
                             }
                             span("icon") { i("fa-solid fa-gear") }
                         }
-                        button(classes = "button is-text") {
+                        button(classes = "button is-text $textColorClass") {
                             style = "text-decoration: none;"
                             span("icon") { i("fa-solid fa-chevron-down") }
                         }

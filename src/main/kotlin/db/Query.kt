@@ -122,7 +122,7 @@ suspend fun getLatestAccounts(): List<Account>? {
         val updateId =
             UpdateTable.select(UpdateTable.id).orderBy(UpdateTable.createdAt to SortOrder.DESC).limit(1).map {
                 it[UpdateTable.id]
-            }.getOrNull(0)
+            }.firstOrNull()
 
         if (updateId == null) return@suspendTransaction null
 
@@ -139,5 +139,24 @@ suspend fun getLatestAccounts(): List<Account>? {
                 it[AccountTable.type]
             )
         }
+    }
+}
+
+suspend fun getAccountSettings(actId: String?): Account? {
+    if (actId == null) return null
+    return suspendTransaction {
+        AccountTable.selectAll().where {
+            AccountTable.sfinId eq actId
+        }.map {
+            Account(
+                it[AccountTable.sfinId],
+                it[AccountTable.connId],
+                BigDecimal.ZERO,
+                it[AccountTable.name],
+                it[AccountTable.alias],
+                it[AccountTable.color],
+                it[AccountTable.type]
+            )
+        }.firstOrNull()
     }
 }

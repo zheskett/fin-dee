@@ -16,8 +16,7 @@ class DebugPage : Template<FlowContent> {
                             post = "/api/refresh-page"
                             swap = "none"
                         }
-                        span("icon") { i("fa-solid fa-sync-alt") }
-
+                        span("icon") { i("fa-solid fa-rotate") }
                         span { +"Refresh Page" }
                     }
                     button(classes = "button") {
@@ -25,8 +24,7 @@ class DebugPage : Template<FlowContent> {
                             post = "/api/update"
                             swap = "none"
                         }
-                        span("icon") { i("fa-solid fa-sync-alt") }
-
+                        span("icon") { i("fa-solid fa-rotate") }
                         span { +"Update SimpleFin" }
                     }
                 }

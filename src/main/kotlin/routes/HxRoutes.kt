@@ -2,6 +2,7 @@ package findee.routes
 
 import findee.backend.updateSimpleFin
 import findee.common.getDurationString
+import findee.db.getAccountSettings
 import findee.db.getLastUpdateTime
 import findee.db.getNumUpdatesSinceTime
 import io.ktor.server.response.*
@@ -10,6 +11,7 @@ import findee.templates.*
 import io.ktor.htmx.HxResponseHeaders
 import io.ktor.htmx.html.hx
 import io.ktor.http.*
+import io.ktor.server.application.log
 import io.ktor.server.html.*
 import io.ktor.server.htmx.*
 import io.ktor.server.request.requireHeader
@@ -54,6 +56,14 @@ fun Route.hxRoutes() {
                             +"Confirm"
                         }
                     }
+                }
+            }
+
+            get("/account-settings/{sfinId}") {
+                val sfinId = call.pathParameters["sfinId"]
+                val account = getAccountSettings(sfinId)
+                call.respondHtmlFragment {
+                    insert(AccountSettingsModal(account!!)) {}
                 }
             }
         }

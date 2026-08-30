@@ -19,7 +19,6 @@ class BaseTemplate<T : Template<FlowContent>>(private val inner: T) : Template<H
             link("/static/favicon.png", "icon", "image/png")
             meta("viewport", "width=device-width, initial-scale=1")
             script("text/javascript", "/static/htmx.min.js") {}
-            script("text/javascript", "/static/fontawesome/attribution.js") {}
         }
 
         body {
@@ -42,6 +41,8 @@ class BaseTemplate<T : Template<FlowContent>>(private val inner: T) : Template<H
                         div("navbar-item") {
                             button(classes = "button") {
                                 attributes["hx-disable"] = "this"
+                                attributes["hx-status:4xx"] = "swap:outerHTML"
+                                attributes["hx-status:5xx"] = "swap:outerHTML"
                                 attributes.hx {
                                     on("before:request", "this.classList.add('is-loading')")
                                     on("finally:request", "this.classList.remove('is-loading')")
@@ -49,7 +50,7 @@ class BaseTemplate<T : Template<FlowContent>>(private val inner: T) : Template<H
                                     target = "body"
                                     swap = "beforeend"
                                 }
-                                span("icon") { i("fas fa-sync") }
+                                span("icon") { i("fa-solid fa-rotate") }
                                 span { +"Update" }
                             }
                         }

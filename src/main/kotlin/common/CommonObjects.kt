@@ -7,6 +7,11 @@ enum class AccountType(val decode: String) {
     CREDIT_CARD("Credit Card"),
     SAVINGS("Savings"),
     INVESTMENTS("Investments"),
+    LOAN("Loan");
+
+    fun isCheckingType(): Boolean {
+        return this == CHECKING || this == CREDIT_CARD
+    }
 }
 
 data class Account(

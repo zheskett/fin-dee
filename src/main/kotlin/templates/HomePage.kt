@@ -7,8 +7,10 @@ import kotlinx.html.*
 
 class HomePage(private val accounts: List<Account>?) : Template<FlowContent> {
     override fun FlowContent.apply() {
-        section("section") {
-            insert(OverviewBox(accounts)) {}
+        insert(OverviewBox(accounts)) {}
+        section("py-4") {}
+        accounts?.forEach {
+            insert(AccountBox(it)) {}
         }
     }
 }

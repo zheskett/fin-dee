@@ -16,7 +16,7 @@ class DebugPage : Template<FlowContent> {
                             post = "/api/refresh-page"
                             swap = "none"
                         }
-                        span("icon") { i("fas fa-sync-alt") }
+                        span("icon") { i("fa-solid fa-sync-alt") }
 
                         span { +"Refresh Page" }
                     }
@@ -25,7 +25,7 @@ class DebugPage : Template<FlowContent> {
                             post = "/api/update"
                             swap = "none"
                         }
-                        span("icon") { i("fas fa-sync-alt") }
+                        span("icon") { i("fa-solid fa-sync-alt") }
 
                         span { +"Update SimpleFin" }
                     }

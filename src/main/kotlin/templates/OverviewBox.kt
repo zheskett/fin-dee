@@ -18,7 +18,7 @@ class OverviewBox(accounts: List<Account>?) : Template<FlowContent> {
                 div("level-item has-text-centered") {
                     div {
                         p("heading") {
-                            span("icon mr-1") { i("fas fa-credit-card") }
+                            span("icon mr-1") { i("fa-solid fa-credit-card") }
                             span { +"Checking Value" }
                         }
                         p("title $cvColorClass") { +cvPair.first }
@@ -27,7 +27,7 @@ class OverviewBox(accounts: List<Account>?) : Template<FlowContent> {
                 div("level-item has-text-centered") {
                     div {
                         p("heading") {
-                            span("icon mr-1") { i("fas fa-piggy-bank") }
+                            span("icon mr-1") { i("fa-solid fa-piggy-bank") }
                             span { +"Net Worth" }
                         }
                         p("title $nwColorClass") { +nwPair.first }

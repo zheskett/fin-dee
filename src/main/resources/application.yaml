@@ -1,4 +1,5 @@
 ktor:
+  development: ${FINDEE_DEBUG:false}
   deployment:
     port: ${PORT}
   application:
@@ -8,9 +9,11 @@ ktor:
       - findee.AppKt.monitors
       - findee.AppKt.dbConnect
   
+  debug:
+    debug: ${FINDEE_DEBUG:false}
   db:
     dir: ${DB_DIR}
   client:
     simplefin_url: ${SIMPLEFIN_URL}
     simplefin_username: ${SIMPLEFIN_USERNAME} 
-    simplefin_password: ${SIMPLEFIN_PASSWORD} 
+    simplefin_password: ${SIMPLEFIN_PASSWORD}

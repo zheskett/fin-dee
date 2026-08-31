@@ -69,11 +69,6 @@ fun Route.hxRoutes() {
 
     route("api") {
         hx {
-            post("/refresh-page") {
-                call.response.header(HxResponseHeaders.Refresh, "true")
-                call.respond(HttpStatusCode.NoContent)
-            }
-
             post("/update") {
                 val ok = updateSimpleFin()
                 call.response.header(HxResponseHeaders.Refresh, "true")
@@ -93,6 +88,25 @@ fun Route.hxRoutes() {
                 call.response.header(HxResponseHeaders.Refresh, "true")
                 call.respond(if (ok) HttpStatusCode.NoContent else HttpStatusCode.InternalServerError)
             }
+        }
+    }
+
+    route("debug") {
+        val isDebugStr = environment.config.property("ktor.debug.debug").getString()
+        if (isDebugStr != "true") return@route
+
+        post("reset") {
+            resetTables()
+            call.response.header(HxResponseHeaders.Refresh, "true")
+            call.respond(HttpStatusCode.NoContent)
+        }
+
+        post("mock") {
+            resetTables()
+            storeUpdate(MockCenter.genAccountSet(), HttpStatusCode.OK)
+
+            call.response.header(HxResponseHeaders.Refresh, "true")
+            call.respond(HttpStatusCode.NoContent)
         }
     }
 }

@@ -1,6 +1,7 @@
 package findee.templates
 
 import io.ktor.htmx.html.hx
+import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.html.*
 import io.ktor.utils.io.ExperimentalKtorApi
 import kotlinx.html.*
@@ -8,6 +9,8 @@ import kotlinx.html.*
 class BaseTemplate<T : Template<FlowContent>>(private val inner: T) : Template<HTML> {
     val insideContent = TemplatePlaceholder<T>()
     private val appName = "Fin-Dee"
+    private val config = ApplicationConfig("application.yaml")
+    private val isDebug = config.property("ktor.debug.debug").getString() == "true"
 
     @OptIn(ExperimentalKtorApi::class)
     override fun HTML.apply() {
@@ -54,12 +57,15 @@ class BaseTemplate<T : Template<FlowContent>>(private val inner: T) : Template<H
                                 span { +"Update" }
                             }
                         }
-                        div("navbar-item") {
-                            a("/debug", classes = "button is-danger") {
-                                attributes.hx {
-                                    boost = true
+
+                        if (isDebug) {
+                            div("navbar-item") {
+                                a("/debug", classes = "button is-danger") {
+                                    attributes.hx {
+                                        boost = true
+                                    }
+                                    +"Debug"
                                 }
-                                +"Debug"
                             }
                         }
                     }

@@ -10,16 +10,18 @@ import org.slf4j.LoggerFactory
 import java.math.BigDecimal
 import java.time.OffsetDateTime
 
+private val tables = arrayOf(UpdateTable, AccountUpdateTable, AccountTable, ConnectionTable, ErrorTable)
+
 fun createTables(db: Database) {
     transaction(db) {
-        SchemaUtils.create(
-            UpdateTable,
-            AccountUpdateTable,
-            AccountTable,
-            ConnectionTable,
-            ErrorTable,
-            inBatch = true
-        )
+        SchemaUtils.create(*tables, inBatch = true)
+    }
+}
+
+suspend fun resetTables() {
+    suspendTransaction {
+        SchemaUtils.drop(*tables, inBatch = true)
+        SchemaUtils.create(*tables, inBatch = true)
     }
 }
 

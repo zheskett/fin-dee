@@ -15,6 +15,7 @@ fun Route.baseRoutes() {
     }
 
     get("/debug") {
+        if (environment.config.property("ktor.debug.debug").getString() != "true") return@get
         call.respondHtmlTemplate(BaseTemplate(DebugPage())) {
             insideContent {}
         }

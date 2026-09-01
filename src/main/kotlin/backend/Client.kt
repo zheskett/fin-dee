@@ -5,9 +5,8 @@ import findee.db.*
 import io.ktor.client.*
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.ResponseException
+import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.HttpResponse
@@ -33,6 +32,14 @@ val client = HttpClient(CIO) {
             isLenient = true
             ignoreUnknownKeys = true
         })
+    }
+    install(HttpTimeout) {
+        connectTimeoutMillis = 15_000
+        requestTimeoutMillis = 60_000
+        socketTimeoutMillis = 60_000
+    }
+    engine {
+        requestTimeout = 0
     }
 
     defaultRequest {

@@ -31,7 +31,7 @@ class AccountSettingsModal(val account: Account) : Template<FlowContent> {
                         div("field") {
                             label("label") {
                                 attributes["for"] = "asf-type"
-                                span("icon mr-1") { i("fa-solid fa-sack-dollar") }
+                                span("icon mr-1") { i("fa-solid fa-chart-simple") }
                                 span { +"Account Type" }
                             }
                             div("control") {

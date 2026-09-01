@@ -42,3 +42,8 @@
 .account-header .button.is-text.has-text-white-ter:hover {
     background-color: rgba(255, 255, 255, 0.15);
 }
+
+.grid.key-value {
+    grid-template-columns: repeat(2, max-content);
+    align-items: baseline;
+}

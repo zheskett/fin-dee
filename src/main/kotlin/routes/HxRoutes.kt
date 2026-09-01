@@ -103,7 +103,7 @@ fun Route.hxRoutes() {
 
         post("mock") {
             resetTables()
-            storeUpdate(MockCenter.genAccountSet(), HttpStatusCode.OK)
+            MockCenter.mockDB()
 
             call.response.header(HxResponseHeaders.Refresh, "true")
             call.respond(HttpStatusCode.NoContent)

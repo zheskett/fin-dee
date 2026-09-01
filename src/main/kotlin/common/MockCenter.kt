@@ -1,32 +1,64 @@
 package findee.common
 
+import findee.db.storeUpdate
+import findee.db.updateAccountSettings
+import io.ktor.http.HttpStatusCode
 import kotlin.random.Random
 import kotlin.uuid.Uuid
 
+private const val NUM_CONNECTIONS = 5
+private const val MIN_ACCOUNTS = 2
+private const val MAX_ACCOUNTS = 8
+
 object MockCenter {
-    fun genAccountSet(): SimpleFinAccountSet {
+    suspend fun mockDB() {
         val errlist = emptyList<SimpleFinError>()
-        TODO()
+        val connsAndColors = genConnectionAndColors(NUM_CONNECTIONS)
+        val allData = List(Random.nextInt(MIN_ACCOUNTS, MAX_ACCOUNTS + 1)) {
+            val cac = connsAndColors.random()
+            val awt = genAccountWithType(cac.first.connId)
+            AllData(cac.first, awt.first, cac.second, awt.second)
+        }.sortedBy { it.conn.name }
+        val accountSet = SimpleFinAccountSet(
+            errlist,
+            connsAndColors.map { it.first },
+            allData.map { it.act }
+        )
+
+        storeUpdate(accountSet, HttpStatusCode.OK)
+        for ((conn, act, color, type) in allData) {
+            updateAccountSettings(act.id, null, type, color)
+        }
     }
 
-    private fun genConnectionAndColor(): Pair<SimpleFinConnection, String> {
-        return SimpleFinConnection(
-            "CONN-${Uuid.random()}",
-            connectionNames.random(),
-            "IGNORE",
-            "IGNORE",
-            "IGNORE"
-        ) to genRandColor()
+    private data class AllData(
+        val conn: SimpleFinConnection,
+        val act: SimpleFinAccount,
+        val color: String,
+        val type: AccountType
+    )
+
+    private fun genConnectionAndColors(num: Int): List<Pair<SimpleFinConnection, String>> {
+        return connectionNames.shuffled().take(num).map {
+            SimpleFinConnection(
+                "CONN-${Uuid.random()}",
+                it,
+                "IGNORE",
+                "IGNORE",
+                "IGNORE"
+            ) to genRandColor()
+        }
     }
 
     private fun genAccountWithType(connId: String): Pair<SimpleFinAccount, AccountType> {
         val accountEnd = accountSuffixesAndTypes.random()
+        val prefix = if (accountEnd.second == AccountType.CREDIT_CARD) "-" else ""
         return SimpleFinAccount(
             "ACT-${Uuid.random()}",
             "${accountPrefixes.random()} ${accountEnd.first}",
             connId,
             "USD",
-            genRandBalance(),
+            "$prefix${genRandBalance()}",
             null,
             0,
             null
@@ -58,9 +90,10 @@ private val connectionNames = listOf(
     "Crazy Credit Union",
     "Lazy Capital",
     "Big Bank",
-    "Alpaca",
-    "Green Federal Banking",
-    "Money Masters"
+    "Alpaca Bank",
+    "Mµ Banking",
+    "Money Masters",
+    "Wintergreen One Financial"
 )
 
 private val accountPrefixes = listOf(
@@ -70,7 +103,8 @@ private val accountPrefixes = listOf(
     "Retirement",
     "Traditional",
     "Greatest Cash",
-    "Lizard"
+    "Lizard",
+    "Organized"
 )
 
 private val accountSuffixesAndTypes = listOf(
@@ -80,6 +114,7 @@ private val accountSuffixesAndTypes = listOf(
     "Retirement" to AccountType.SAVINGS,
     "Savings" to AccountType.SAVINGS,
     "Credit Card" to AccountType.CREDIT_CARD,
+    "Platinum Card" to AccountType.CREDIT_CARD,
     "Fund" to AccountType.INVESTMENT,
     "Combo" to AccountType.CHECKING
 )

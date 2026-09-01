@@ -11,6 +11,7 @@ import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.util.reflect.typeInfo
@@ -67,6 +68,9 @@ suspend fun updateSimpleFin(
         }
     } catch (e: ResponseException) {
         storeUpdateError(e.message, e.response.status)
+        return false
+    } catch (e: HttpRequestTimeoutException) {
+        storeUpdateError(e.message, HttpStatusCode.RequestTimeout)
         return false
     }
 

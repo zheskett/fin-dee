@@ -6,7 +6,7 @@ import io.ktor.server.html.*
 import io.ktor.utils.io.ExperimentalKtorApi
 import kotlinx.html.*
 
-class AccountSettingsModal(val account: Account) : Template<FlowContent> {
+class AccountSettingsModal(private val account: Account) : Template<FlowContent> {
     @OptIn(ExperimentalKtorApi::class)
     override fun FlowContent.apply() {
         insert(Modal()) {

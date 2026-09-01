@@ -10,11 +10,7 @@ import java.math.BigDecimal
 class AccountBox(private val account: Account) : Template<FlowContent> {
     private val textColorClass = calcTextColorClass(account.color)
     private val isNeg = account.balance < BigDecimal.ZERO
-    private val balanceStr = run {
-        val balPart = account.balance.abs().toPlainString()
-        val negPart = if (isNeg) "-" else ""
-        "$negPart$$balPart"
-    }
+    private val balanceStr = moneyFormat.format(account.balance)
     private val clickStr =
         """
             find('next .message-body').classList.toggle('is-hidden');
@@ -36,7 +32,7 @@ class AccountBox(private val account: Account) : Template<FlowContent> {
                             +(account.connName)
                         }
                     }
-                    div("buttons") {
+                    div("field is-grouped") {
                         button(classes = "button") {
                             attributes["hx-disable"] = "this"
                             attributes["hx-status:4xx"] = "swap:outerHTML"

@@ -41,6 +41,6 @@ fun calcTextColorClass(bgColor: String): String {
     return if (lum > 125) "has-text-grey-darker" else "has-text-white-ter"
 }
 
-private fun pl(x: Number, s: String): String {
-    return if (x != 1) "${s}s" else s
+private fun pl(x: Long, s: String): String {
+    return if (x != 1.toLong()) "${s}s" else s
 }

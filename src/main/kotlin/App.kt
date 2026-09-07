@@ -1,18 +1,19 @@
 package findee
 
-import findee.backend.client
+import findee.backend.*
+import findee.common.*
 import findee.db.createTables
 import io.ktor.server.application.*
 import io.ktor.server.http.content.staticResources
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import findee.routes.*
-import findee.templates.BaseTemplate
-import findee.templates.ErrorPage
+import findee.templates.*
 import io.ktor.http.HttpStatusCode
-import io.ktor.server.html.respondHtmlTemplate
+import io.ktor.server.html.*
 import io.ktor.server.plugins.statuspages.*
 import org.jetbrains.exposed.v1.jdbc.*
+import java.time.*
 
 fun Application.configureRouting() {
     routing {
@@ -25,26 +26,30 @@ fun Application.configureRouting() {
 fun Application.configureStatusPages() {
     install(StatusPages) {
         status(HttpStatusCode.NotFound) { call, code ->
-            call.respondHtmlTemplate(BaseTemplate(ErrorPage()), code) {
+            call.respondHtmlTemplate(BaseTemplate(), code) {
                 insideContent {
-                    statusCode {
-                        +code.value.toString()
-                    }
-                    message {
-                        +"Page not found"
+                    insert(ErrorPage()) {
+                        statusCode {
+                            +code.value.toString()
+                        }
+                        message {
+                            +"Page not found"
+                        }
                     }
                 }
             }
         }
 
         exception<Throwable> { call, cause ->
-            call.respondHtmlTemplate(BaseTemplate(ErrorPage()), HttpStatusCode.InternalServerError) {
+            call.respondHtmlTemplate(BaseTemplate(), HttpStatusCode.InternalServerError) {
                 insideContent {
-                    statusCode {
-                        +HttpStatusCode.InternalServerError.value.toString()
-                    }
-                    message {
-                        +"$cause"
+                    insert(ErrorPage()) {
+                        statusCode {
+                            +HttpStatusCode.InternalServerError.value.toString()
+                        }
+                        message {
+                            +"$cause"
+                        }
                     }
                 }
             }
@@ -62,4 +67,16 @@ fun Application.dbConnect() {
     val dbDir = environment.config.property("ktor.db.dir").getString()
     val db = Database.connect("jdbc:h2:$dbDir/h2", "org.h2.Driver")
     createTables(db)
+}
+
+fun Application.scheduleJobs() {
+    // No scheduling in debug mode
+    val debug = environment.config.property("ktor.debug.debug").getString() == "true"
+    if (debug) return
+
+    val hours = environment.config.property("ktor.schedule.hours").getString().toLong()
+    val scheduler = Scheduler {
+        updateSimpleFin()
+    }
+    scheduler.scheduleAt(LocalTime.MIDNIGHT, Duration.ofHours(hours))
 }

@@ -27,6 +27,7 @@ object AccountTable : Table("accounts") {
     val sfinId = varchar("sfin_id", 64)
     val connId = reference("conn_id", ConnectionTable.sfinId).index()
     val name = varchar("name", MAX_VARCHAR)
+    val position = integer("position").autoIncrement()
     val alias = varchar("alias", MAX_VARCHAR).nullable().default(null)
     val color = char("color", 6).check { it regexp "^[0-9a-fA-F]{6}$" }
     val type = enumeration("type", AccountType::class).default(AccountType.CHECKING)

@@ -8,6 +8,7 @@ ktor:
       - findee.AppKt.configureStatusPages
       - findee.AppKt.monitors
       - findee.AppKt.dbConnect
+      - findee.AppKt.scheduleJobs
   
   debug:
     debug: ${FINDEE_DEBUG:false}
@@ -17,3 +18,5 @@ ktor:
     simplefin_url: ${SIMPLEFIN_URL}
     simplefin_username: ${SIMPLEFIN_USERNAME} 
     simplefin_password: ${SIMPLEFIN_PASSWORD}
+  schedule:
+    hours: 8

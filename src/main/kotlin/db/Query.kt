@@ -127,7 +127,7 @@ suspend fun getLatestAccounts(): List<Account>? {
 
         ((AccountUpdateTable innerJoin AccountTable) innerJoin ConnectionTable).selectAll().where {
             AccountUpdateTable.updateId eq updateId
-        }.map {
+        }.orderBy(AccountTable.position).map {
             Account(
                 it[AccountTable.sfinId],
                 it[AccountTable.connId],

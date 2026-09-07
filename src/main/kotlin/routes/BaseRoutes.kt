@@ -9,15 +9,19 @@ import io.ktor.server.html.*
 fun Route.baseRoutes() {
     get("/") {
         val accounts = getLatestAccounts()
-        call.respondHtmlTemplate(BaseTemplate(HomePage(accounts))) {
-            insideContent {}
+        call.respondHtmlTemplate(BaseTemplate()) {
+            insideContent {
+                insert(HomePage(accounts)) {}
+            }
         }
     }
 
     get("/debug") {
         if (environment.config.property("ktor.debug.debug").getString() != "true") return@get
-        call.respondHtmlTemplate(BaseTemplate(DebugPage())) {
-            insideContent {}
+        call.respondHtmlTemplate(BaseTemplate()) {
+            insideContent {
+                insert(DebugPage()) {}
+            }
         }
     }
 }

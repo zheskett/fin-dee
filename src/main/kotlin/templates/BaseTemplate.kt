@@ -6,8 +6,8 @@ import io.ktor.server.html.*
 import io.ktor.utils.io.ExperimentalKtorApi
 import kotlinx.html.*
 
-class BaseTemplate<T : Template<FlowContent>>(private val inner: T) : Template<HTML> {
-    val insideContent = TemplatePlaceholder<T>()
+class BaseTemplate : Template<HTML> {
+    val insideContent = Placeholder<FlowContent>()
     private val appName = "Fin-Dee"
     private val config = ApplicationConfig("application.yaml")
     private val isDebug = config.property("ktor.debug.debug").getString() == "true"
@@ -72,7 +72,7 @@ class BaseTemplate<T : Template<FlowContent>>(private val inner: T) : Template<H
                 }
             }
 
-            insert(inner, insideContent)
+            insert(insideContent)
         }
     }
 }

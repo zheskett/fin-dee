@@ -13,6 +13,7 @@ import io.ktor.server.application.*
 import io.ktor.server.html.*
 import io.ktor.server.htmx.*
 import io.ktor.server.request.*
+import io.ktor.util.flattenEntries
 import io.ktor.utils.io.ExperimentalKtorApi
 import kotlinx.html.*
 import java.time.OffsetDateTime
@@ -86,6 +87,14 @@ fun Route.hxRoutes() {
 
                 val ok = updateAccountSettings(sfinId, alias, type, color)
                 call.response.header(HxResponseHeaders.Refresh, "true")
+                call.respond(if (ok) HttpStatusCode.NoContent else HttpStatusCode.InternalServerError)
+            }
+
+            post("/sort") {
+                val sortList = call.receiveParameters().getAll("order")!!.mapIndexed { i, it ->
+                    it to i + 1
+                }
+                val ok = sortAccounts(sortList)
                 call.respond(if (ok) HttpStatusCode.NoContent else HttpStatusCode.InternalServerError)
             }
         }

@@ -170,3 +170,13 @@ suspend fun updateAccountSettings(actId: String, alias: String?, type: AccountTy
         }
     } > 0
 }
+
+suspend fun sortAccounts(sortList: List<Pair<String, Int>>): Boolean {
+    return suspendTransaction {
+        sortList.sumOf { (actId, order) ->
+            AccountTable.update({ AccountTable.sfinId eq actId }) {
+                it[AccountTable.position] = order
+            }
+        } > 0
+    }
+}

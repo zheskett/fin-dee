@@ -21,10 +21,11 @@ class AccountBox(private val account: Account) : Template<FlowContent> {
     @OptIn(ExperimentalKtorApi::class)
     override fun FlowContent.apply() {
         div("block container is-max-desktop") {
+            input(InputType.hidden, name = "order") { value = account.sfinId }
             article("message") {
-                div("message-header account-header $textColorClass") {
+                div("message-header account-header $textColorClass handle") {
                     style = "--account-color: #${account.color};"
-                    div {
+                    div("no-drag") {
                         p("is-size-5") {
                             +(account.alias ?: account.name)
                         }
@@ -32,8 +33,8 @@ class AccountBox(private val account: Account) : Template<FlowContent> {
                             +(account.connName)
                         }
                     }
-                    div("field is-grouped") {
-                        button(classes = "button") {
+                    div("field is-grouped no-drag") {
+                        button(type = ButtonType.button, classes = "button") {
                             attributes["hx-disable"] = "this"
                             attributes["hx-status:4xx"] = "swap:outerHTML"
                             attributes["hx-status:5xx"] = "swap:outerHTML"
@@ -46,7 +47,7 @@ class AccountBox(private val account: Account) : Template<FlowContent> {
                             }
                             span("icon") { i("fa-solid fa-gear") }
                         }
-                        button(classes = "button is-text $textColorClass") {
+                        button(type = ButtonType.button, classes = "button is-text $textColorClass") {
                             style = "text-decoration: none;"
                             attributes["hx-on:click"] = clickStr
                             span("icon") { i("fa-solid fa-chevron-down") }

@@ -47,3 +47,7 @@
     grid-template-columns: repeat(2, max-content);
     align-items: baseline;
 }
+
+.sortable-ghost {
+    opacity: 0.33;
+}

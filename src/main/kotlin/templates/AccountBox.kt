@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Zachary Heskett <zheskett@gmail.com>
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 package findee.templates
 
 import findee.common.*

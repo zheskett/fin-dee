@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Zachary Heskett <zheskett@gmail.com>
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 package findee.common
 
 import findee.db.storeUpdate
@@ -61,7 +65,8 @@ object MockCenter {
             "$prefix${genRandBalance()}",
             null,
             0,
-            null
+            emptyList(),
+            emptyList()
         ) to accountEnd.second
     }
 

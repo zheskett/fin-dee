@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Zachary Heskett <zheskett@gmail.com>
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 package findee.db
 
 import findee.common.*
@@ -8,9 +12,18 @@ import org.jetbrains.exposed.v1.jdbc.*
 import org.jetbrains.exposed.v1.jdbc.transactions.*
 import org.slf4j.LoggerFactory
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.OffsetDateTime
 
-private val tables = arrayOf(UpdateTable, AccountUpdateTable, AccountTable, ConnectionTable, ErrorTable)
+private val tables = arrayOf(
+    UpdateTable,
+    AccountUpdateTable,
+    AccountTable,
+    ConnectionTable,
+    HoldingUpdateTable,
+    HoldingTable,
+    ErrorTable
+)
 
 fun createTables(db: Database) {
     transaction(db) {
@@ -73,19 +86,16 @@ suspend fun storeUpdate(accountSet: SimpleFinAccountSet, status: HttpStatusCode)
             )
         }
 
-        for ((sfinId, name, connId) in accountSet.accounts) {
+        for ((sfinId, name, connId, _, _, _, _, _, holdings) in accountSet.accounts) {
             AccountTable.insert(
                 Table.Dual
-                    .select(
-                        stringParam(sfinId), stringParam(connId),
-                        stringParam(name), stringParam("676767")
-                    )
+                    .select(stringParam(sfinId), stringParam(connId), stringParam(name))
                     .where {
                         notExists(
                             AccountTable.selectAll().where { AccountTable.sfinId eq sfinId }
                         )
                     },
-                listOf(AccountTable.sfinId, AccountTable.connId, AccountTable.name, AccountTable.color)
+                listOf(AccountTable.sfinId, AccountTable.connId, AccountTable.name)
             )
         }
 
@@ -93,6 +103,29 @@ suspend fun storeUpdate(accountSet: SimpleFinAccountSet, status: HttpStatusCode)
             this[AccountUpdateTable.actId] = it.id
             this[AccountUpdateTable.updateId] = updateId
             this[AccountUpdateTable.balance] = BigDecimal(it.balance)
+        }
+
+        for ((sfinId, _, _, _, _, _, _, _, holdings) in accountSet.accounts) {
+            HoldingTable.batchUpsert(holdings, shouldReturnGeneratedValues = false) {
+                this[HoldingTable.actId] = sfinId
+                this[HoldingTable.holdingId] = it.id
+                this[HoldingTable.description] = it.description
+                this[HoldingTable.costBasis] = BigDecimal(it.costBasis)
+                this[HoldingTable.purchasePrice] = BigDecimal(it.purchasePrice)
+                this[HoldingTable.symbol] = it.symbol
+            }
+
+            HoldingUpdateTable.batchInsert(holdings, shouldReturnGeneratedValues = false) {
+                val shares = BigDecimal(it.shares).setScale(4, RoundingMode.HALF_UP)
+                val marketValue = BigDecimal(it.marketValue).setScale(4, RoundingMode.HALF_UP)
+                val totalValue = (shares * marketValue).setScale(2, RoundingMode.HALF_UP)
+                this[HoldingUpdateTable.actId] = sfinId
+                this[HoldingUpdateTable.holdingId] = it.id
+                this[HoldingUpdateTable.updateId] = updateId
+                this[HoldingUpdateTable.marketValue] = marketValue
+                this[HoldingUpdateTable.totalValue] = totalValue
+                this[HoldingUpdateTable.shares] = shares
+            }
         }
 
         return@suspendTransaction isSuccess

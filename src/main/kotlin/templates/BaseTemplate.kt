@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Zachary Heskett <zheskett@gmail.com>
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 package findee.templates
 
 import io.ktor.htmx.html.hx
@@ -36,7 +40,7 @@ class BaseTemplate : Template<HTML> {
                             img(appName, "/static/logo.svg") {
                                 width = "48"
                             }
-                            h1("is-size-2 has-text-primary-invert is-family-maloney") {
+                            h1("is-size-2 has-text-primary-invert is-family-brand") {
                                 +appName
                             }
                         }
@@ -74,6 +78,14 @@ class BaseTemplate : Template<HTML> {
             }
 
             insert(insideContent)
+
+            footer("mt-6 footer") {
+                div("content has-text-centered") {
+                    a("https://github.com/zheskett/fin-dee") { +appName }
+                    +" © 2026 Zachary Heskett, "
+                    a("https://www.gnu.org/licenses/gpl-3.0.html") { +"GPL-3.0-or-later" }
+                }
+            }
         }
     }
 }

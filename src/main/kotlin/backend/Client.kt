@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Zachary Heskett <zheskett@gmail.com>
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 package findee.backend
 
 import findee.common.SimpleFinAccountSet
@@ -52,8 +56,8 @@ val client = HttpClient(CIO) {
 }
 
 suspend fun updateSimpleFin(
-    startDate: OffsetDateTime? = null,
-    balancesOnly: Boolean = true,
+    startDate: OffsetDateTime = OffsetDateTime.now().minusDays(1),
+    balancesOnly: Boolean = false,
     pending: Boolean = true
 ): Boolean {
     val res = try {
@@ -62,7 +66,7 @@ suspend fun updateSimpleFin(
                 parameters.append("version", "2")
                 parameters.append("balances-only", if (balancesOnly) "1" else "0")
                 parameters.append("pending", if (pending) "1" else "0")
-                val epochLong = startDate?.toEpochSecond() ?: OffsetDateTime.now().toEpochSecond()
+                val epochLong = startDate.toEpochSecond()
                 parameters.append("start-date", epochLong.toString())
             }
         }

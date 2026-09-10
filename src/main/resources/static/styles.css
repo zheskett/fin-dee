@@ -1,6 +1,8 @@
 @font-face {
-    font-family: Maloney;
-    src: url(/static/Maloney.woff);
+    font-family: "Fredoka";
+    src: url(/static/Fredoka-Bold.woff2) format("woff2");
+    font-weight: 700;
+    font-display: swap;
 }
 
 :root {
@@ -19,8 +21,14 @@
     --bulma-danger-l: 65%;
 }
 
-.is-family-maloney {
-    font-family: Maloney;
+.is-family-brand {
+    font-family: "Fredoka", sans-serif;
+    font-weight: 700;
+}
+
+.footer {
+    padding: 1.25rem 1.5rem;
+    font-size: 0.875rem;
 }
 
 .modal {

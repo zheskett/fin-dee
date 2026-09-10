@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Zachary Heskett <zheskett@gmail.com>
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 package findee.common
 
 import kotlinx.serialization.*
@@ -33,11 +37,12 @@ data class SimpleFinAccount(
     val id: String,
     val name: String,
     @SerialName("conn_id") val connId: String,
-    val currency: String,
+    val currency: String = "USD",
     val balance: String,
     @SerialName("available-balance") val availableBalance: String? = null,
     @SerialName("balance-date") val balanceDate: Long,
-    val transactions: List<SimpleFinTransaction>? = null,
+    val transactions: List<SimpleFinTransaction> = emptyList(),
+    val holdings: List<SimpleFinHolding> = emptyList()
     // extra ignored
 )
 
@@ -50,4 +55,17 @@ data class SimpleFinTransaction(
     @SerialName("transacted_at") val transactedAt: Long? = null,
     val pending: Boolean = false,
     // extra ignored
+)
+
+@Serializable
+data class SimpleFinHolding(
+    val id: String,
+    val created: Long,
+    val currency: String = "USD",
+    @SerialName("cost_basis") val costBasis: String,
+    val description: String,
+    @SerialName("market_value") val marketValue: String,
+    @SerialName("purchase_price") val purchasePrice: String = "0.00",
+    val shares: String,
+    val symbol: String,
 )

@@ -77,13 +77,17 @@ class BaseTemplate : Template<HTML> {
                 }
             }
 
-            insert(insideContent)
+            main {
+                insert(insideContent)
+            }
 
             footer("mt-6 footer") {
                 div("content has-text-centered") {
-                    a("https://github.com/zheskett/fin-dee") { +appName }
-                    +" © 2026 Zachary Heskett, "
-                    a("https://www.gnu.org/licenses/gpl-3.0.html") { +"GPL-3.0-or-later" }
+                    p("is-size-7") {
+                        a("https://github.com/zheskett/fin-dee") { +appName }
+                        +" © 2026 Zachary Heskett, "
+                        a("https://www.gnu.org/licenses/gpl-3.0.html") { +"GPL-3.0-or-later" }
+                    }
                 }
             }
         }

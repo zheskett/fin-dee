@@ -15,8 +15,6 @@ private val sortableLoad = """
     new Sortable(this, {
         animation: 150,
         ghostClass: 'sortable-ghost',
-        filter: '.no-drag',
-        preventOnFilter: false,
         handle: '.handle',
         onEnd: function () { this.option('disabled', true) }
     })

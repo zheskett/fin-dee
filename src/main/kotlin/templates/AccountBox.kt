@@ -11,25 +11,24 @@ import io.ktor.utils.io.ExperimentalKtorApi
 import kotlinx.html.*
 import java.math.BigDecimal
 
+private val clickStr = """
+    find('next .message-body').classList.toggle('is-hidden');
+    find('find i').classList.toggle('fa-chevron-down', 'fa-chevron-right');
+""".trimIndent().replace("\n", "")
+
 class AccountBox(private val account: Account) : Template<FlowContent> {
     private val textColorClass = calcTextColorClass(account.color)
     private val isNeg = account.balance < BigDecimal.ZERO
     private val balanceStr = moneyFormat.format(account.balance)
-    private val clickStr =
-        """
-            find('next .message-body').classList.toggle('is-hidden');
-            find('find i').classList.toggle('fa-chevron-down');
-            find('find i').classList.toggle('fa-chevron-right');
-        """.trimIndent().replace("\n", "")
 
     @OptIn(ExperimentalKtorApi::class)
     override fun FlowContent.apply() {
         div("block container is-max-desktop") {
             input(InputType.hidden, name = "order") { value = account.sfinId }
             article("message") {
-                div("message-header account-header $textColorClass handle") {
+                div("message-header account-header $textColorClass") {
                     style = "--account-color: #${account.color};"
-                    div("no-drag") {
+                    div {
                         p("is-size-5") {
                             +(account.alias ?: account.name)
                         }
@@ -37,7 +36,10 @@ class AccountBox(private val account: Account) : Template<FlowContent> {
                             +(account.connName)
                         }
                     }
-                    div("field is-grouped no-drag") {
+                    div("handle") {
+                        style = "flex: 0.9; align-self: stretch; margin: -1em 0"
+                    }
+                    div("field is-grouped") {
                         button(type = ButtonType.button, classes = "button") {
                             attributes["hx-disable"] = "this"
                             attributes["hx-status:4xx"] = "swap:outerHTML"

@@ -21,6 +21,23 @@
     --bulma-danger-l: 65%;
 }
 
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
 .is-family-brand {
     font-family: "Fredoka", sans-serif;
     font-weight: 700;
@@ -28,7 +45,6 @@
 
 .footer {
     padding: 1.25rem 1.5rem;
-    font-size: 0.875rem;
 }
 
 .modal {

@@ -10,22 +10,26 @@ import java.time.*
 
 val moneyFormat: NumberFormat = NumberFormat.getCurrencyInstance()
 
-fun getDurationString(t1: OffsetDateTime?, t2: OffsetDateTime?): String {
+fun getDurationString(
+    t1: OffsetDateTime?,
+    t2: OffsetDateTime?,
+): String {
     if (t1 == null || t2 == null) return "never"
 
     val dur = Duration.between(t1, t2)
     val tense = if (dur.isNegative) "from now" else "ago"
     val absDur = dur.abs()
 
-    val timeMap = mapOf(
-        "year" to absDur.toDays() / 365,
-        "month" to absDur.toDays() / 30,
-        "week" to absDur.toDays() / 7,
-        "day" to absDur.toDays(),
-        "hour" to absDur.toHours(),
-        "minute" to absDur.toMinutes(),
-        "second" to absDur.toSeconds()
-    )
+    val timeMap =
+        mapOf(
+            "year" to absDur.toDays() / 365,
+            "month" to absDur.toDays() / 30,
+            "week" to absDur.toDays() / 7,
+            "day" to absDur.toDays(),
+            "hour" to absDur.toHours(),
+            "minute" to absDur.toMinutes(),
+            "second" to absDur.toSeconds(),
+        )
 
     for ((time, length) in timeMap) {
         if (length == 0.toLong()) continue
@@ -45,6 +49,7 @@ fun calcTextColorClass(bgColor: String): String {
     return if (lum > 125) "has-text-grey-darker" else "has-text-white-ter"
 }
 
-private fun pl(x: Number, s: String): String {
-    return if (x.toInt() != 1) "${s}s" else s
-}
+private fun pl(
+    x: Number,
+    s: String,
+): String = if (x.toInt() != 1) "${s}s" else s

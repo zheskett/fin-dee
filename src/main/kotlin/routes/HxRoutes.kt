@@ -7,8 +7,6 @@ package findee.routes
 import findee.backend.*
 import findee.common.*
 import findee.db.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
 import findee.templates.*
 import io.ktor.htmx.HxResponseHeaders
 import io.ktor.htmx.html.hx
@@ -17,6 +15,8 @@ import io.ktor.server.application.*
 import io.ktor.server.html.*
 import io.ktor.server.htmx.*
 import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import io.ktor.util.flattenEntries
 import io.ktor.utils.io.ExperimentalKtorApi
 import kotlinx.html.*
@@ -84,8 +84,11 @@ fun Route.hxRoutes() {
                 val sfinId = call.pathParameters["sfinId"]!!
                 val params = call.receiveParameters()
                 val alias =
-                    if ((params["alias"] ?: "").isEmpty()) null
-                    else params["alias"]
+                    if ((params["alias"] ?: "").isEmpty()) {
+                        null
+                    } else {
+                        params["alias"]
+                    }
                 val type = AccountType.fromDecode(params["type"]!!)!!
                 val color = params["color"]!!.substring(1)
 
@@ -95,9 +98,10 @@ fun Route.hxRoutes() {
             }
 
             post("/sort") {
-                val sortList = call.receiveParameters().getAll("order")!!.mapIndexed { i, it ->
-                    it to i + 1
-                }
+                val sortList =
+                    call.receiveParameters().getAll("order")!!.mapIndexed { i, it ->
+                        it to i + 1
+                    }
                 val ok = sortAccounts(sortList)
                 call.respond(if (ok) HttpStatusCode.NoContent else HttpStatusCode.InternalServerError)
             }

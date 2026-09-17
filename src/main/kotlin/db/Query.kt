@@ -15,15 +15,16 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.OffsetDateTime
 
-private val tables = arrayOf(
-    UpdateTable,
-    AccountUpdateTable,
-    AccountTable,
-    ConnectionTable,
-    HoldingUpdateTable,
-    HoldingTable,
-    ErrorTable
-)
+private val tables =
+    arrayOf(
+        UpdateTable,
+        AccountUpdateTable,
+        AccountTable,
+        ConnectionTable,
+        HoldingUpdateTable,
+        HoldingTable,
+        ErrorTable,
+    )
 
 fun createTables(db: Database) {
     transaction(db) {
@@ -38,12 +39,16 @@ suspend fun resetTables() {
     }
 }
 
-suspend fun storeUpdateError(errorMsg: String?, status: HttpStatusCode) {
+suspend fun storeUpdateError(
+    errorMsg: String?,
+    status: HttpStatusCode,
+) {
     suspendTransaction {
-        val updateInsert = UpdateTable.insert {
-            it[httpCode] = status.value
-            it[createdAt] = CurrentTimestampWithTimeZone
-        }
+        val updateInsert =
+            UpdateTable.insert {
+                it[httpCode] = status.value
+                it[createdAt] = CurrentTimestampWithTimeZone
+            }
         val updateId = updateInsert[UpdateTable.id]
         val errCode = "${status.value}: ${status.description}"
         val errMsg = errorMsg ?: "none"
@@ -55,12 +60,16 @@ suspend fun storeUpdateError(errorMsg: String?, status: HttpStatusCode) {
     }
 }
 
-suspend fun storeUpdate(accountSet: SimpleFinAccountSet, status: HttpStatusCode): Boolean {
+suspend fun storeUpdate(
+    accountSet: SimpleFinAccountSet,
+    status: HttpStatusCode,
+): Boolean {
     return suspendTransaction {
         var isSuccess = true
-        val updateInsert = UpdateTable.insert {
-            it[httpCode] = status.value
-        }
+        val updateInsert =
+            UpdateTable.insert {
+                it[httpCode] = status.value
+            }
         val updateId = updateInsert[UpdateTable.id]
 
         for ((code, msg) in accountSet.errlist) {
@@ -79,10 +88,10 @@ suspend fun storeUpdate(accountSet: SimpleFinAccountSet, status: HttpStatusCode)
                     .select(stringParam(connId), stringParam(name))
                     .where {
                         notExists(
-                            ConnectionTable.selectAll().where { ConnectionTable.sfinId eq connId }
+                            ConnectionTable.selectAll().where { ConnectionTable.sfinId eq connId },
                         )
                     },
-                listOf(ConnectionTable.sfinId, ConnectionTable.name)
+                listOf(ConnectionTable.sfinId, ConnectionTable.name),
             )
         }
 
@@ -92,10 +101,10 @@ suspend fun storeUpdate(accountSet: SimpleFinAccountSet, status: HttpStatusCode)
                     .select(stringParam(sfinId), stringParam(connId), stringParam(name))
                     .where {
                         notExists(
-                            AccountTable.selectAll().where { AccountTable.sfinId eq sfinId }
+                            AccountTable.selectAll().where { AccountTable.sfinId eq sfinId },
                         )
                     },
-                listOf(AccountTable.sfinId, AccountTable.connId, AccountTable.name)
+                listOf(AccountTable.sfinId, AccountTable.connId, AccountTable.name),
             )
         }
 
@@ -130,86 +139,100 @@ suspend fun storeUpdate(accountSet: SimpleFinAccountSet, status: HttpStatusCode)
 
         return@suspendTransaction isSuccess
     }
-
 }
 
-suspend fun getLastUpdateTime(): OffsetDateTime? {
-    return suspendTransaction {
-        UpdateTable.select(UpdateTable.createdAt).orderBy(UpdateTable.createdAt to SortOrder.DESC).limit(1).map {
-            it[UpdateTable.createdAt]
-        }.getOrNull(0)
+suspend fun getLastUpdateTime(): OffsetDateTime? =
+    suspendTransaction {
+        UpdateTable
+            .select(UpdateTable.createdAt)
+            .orderBy(UpdateTable.createdAt to SortOrder.DESC)
+            .limit(1)
+            .map {
+                it[UpdateTable.createdAt]
+            }.getOrNull(0)
     }
-}
 
-suspend fun getNumUpdatesSinceTime(dur: OffsetDateTime): Long {
-    return suspendTransaction {
-        UpdateTable.selectAll().where {
-            UpdateTable.createdAt greaterEq dur
-        }.count()
+suspend fun getNumUpdatesSinceTime(dur: OffsetDateTime): Long =
+    suspendTransaction {
+        UpdateTable
+            .selectAll()
+            .where {
+                UpdateTable.createdAt greaterEq dur
+            }.count()
     }
-}
 
 suspend fun getLatestAccounts(): List<Account>? {
     return suspendTransaction {
         val updateId =
-            UpdateTable.select(UpdateTable.id).orderBy(UpdateTable.createdAt to SortOrder.DESC).limit(1).map {
-                it[UpdateTable.id]
-            }.firstOrNull()
+            UpdateTable
+                .select(UpdateTable.id)
+                .orderBy(UpdateTable.createdAt to SortOrder.DESC)
+                .limit(1)
+                .map {
+                    it[UpdateTable.id]
+                }.firstOrNull()
 
         if (updateId == null) return@suspendTransaction null
 
-        ((AccountUpdateTable innerJoin AccountTable) innerJoin ConnectionTable).selectAll().where {
-            AccountUpdateTable.updateId eq updateId
-        }.orderBy(AccountTable.position).map {
-            Account(
-                it[AccountTable.sfinId],
-                it[AccountTable.connId],
-                it[ConnectionTable.name],
-                it[AccountUpdateTable.balance],
-                it[AccountTable.name],
-                it[AccountTable.alias],
-                it[AccountTable.color],
-                it[AccountTable.type]
-            )
-        }
+        ((AccountUpdateTable innerJoin AccountTable) innerJoin ConnectionTable)
+            .selectAll()
+            .where {
+                AccountUpdateTable.updateId eq updateId
+            }.orderBy(AccountTable.position)
+            .map {
+                Account(
+                    it[AccountTable.sfinId],
+                    it[AccountTable.connId],
+                    it[ConnectionTable.name],
+                    it[AccountUpdateTable.balance],
+                    it[AccountTable.name],
+                    it[AccountTable.alias],
+                    it[AccountTable.color],
+                    it[AccountTable.type],
+                )
+            }
     }
 }
 
-suspend fun getAccountSettings(actId: String): Account? {
-    return suspendTransaction {
-        AccountTable.selectAll().where {
-            AccountTable.sfinId eq actId
-        }.map {
-            Account(
-                it[AccountTable.sfinId],
-                it[AccountTable.connId],
-                "PLACEHOLDER",
-                BigDecimal.ZERO,
-                it[AccountTable.name],
-                it[AccountTable.alias],
-                it[AccountTable.color],
-                it[AccountTable.type]
-            )
-        }.firstOrNull()
+suspend fun getAccountSettings(actId: String): Account? =
+    suspendTransaction {
+        AccountTable
+            .selectAll()
+            .where {
+                AccountTable.sfinId eq actId
+            }.map {
+                Account(
+                    it[AccountTable.sfinId],
+                    it[AccountTable.connId],
+                    "PLACEHOLDER",
+                    BigDecimal.ZERO,
+                    it[AccountTable.name],
+                    it[AccountTable.alias],
+                    it[AccountTable.color],
+                    it[AccountTable.type],
+                )
+            }.firstOrNull()
     }
-}
 
-suspend fun updateAccountSettings(actId: String, alias: String?, type: AccountType, color: String): Boolean {
-    return suspendTransaction {
+suspend fun updateAccountSettings(
+    actId: String,
+    alias: String?,
+    type: AccountType,
+    color: String,
+): Boolean =
+    suspendTransaction {
         AccountTable.update({ AccountTable.sfinId eq actId }) {
             it[AccountTable.alias] = alias
             it[AccountTable.type] = type
             it[AccountTable.color] = color
         }
     } > 0
-}
 
-suspend fun sortAccounts(sortList: List<Pair<String, Int>>): Boolean {
-    return suspendTransaction {
+suspend fun sortAccounts(sortList: List<Pair<String, Int>>): Boolean =
+    suspendTransaction {
         sortList.sumOf { (actId, order) ->
             AccountTable.update({ AccountTable.sfinId eq actId }) {
                 it[AccountTable.position] = order
             }
         } > 0
     }
-}

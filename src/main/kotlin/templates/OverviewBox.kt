@@ -11,11 +11,14 @@ import io.ktor.server.html.*
 import kotlinx.html.*
 import java.math.BigDecimal
 
-class OverviewBox(accounts: List<Account>?) : Template<FlowContent> {
+class OverviewBox(
+    accounts: List<Account>?,
+) : Template<FlowContent> {
     private val cvPair = getWorth(accounts, true)
     private val nwPair = getWorth(accounts, false)
     private val cvColorClass = if (cvPair.second >= BigDecimal.ZERO) "has-text-primary" else "has-text-danger"
     private val nwColorClass = if (nwPair.second >= BigDecimal.ZERO) "has-text-primary" else "has-text-danger"
+
     override fun FlowContent.apply() {
         section("section") {
             div("block container box is-max-desktop") {
@@ -45,16 +48,20 @@ class OverviewBox(accounts: List<Account>?) : Template<FlowContent> {
     }
 }
 
-private fun getWorth(accounts: List<Account>?, checkingOnly: Boolean): Pair<String, BigDecimal> {
+private fun getWorth(
+    accounts: List<Account>?,
+    checkingOnly: Boolean,
+): Pair<String, BigDecimal> {
     if (accounts == null) return "N/A" to BigDecimal.ZERO
 
-
-    val total = accounts.sumOf {
-        if (checkingOnly && !it.type.isCheckingType())
-            BigDecimal.ZERO
-        else it.balance
-    }
+    val total =
+        accounts.sumOf {
+            if (checkingOnly && !it.type.isCheckingType()) {
+                BigDecimal.ZERO
+            } else {
+                it.balance
+            }
+        }
 
     return moneyFormat.format(total) to total
-
 }

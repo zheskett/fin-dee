@@ -7,15 +7,15 @@ package findee
 import findee.backend.*
 import findee.common.*
 import findee.db.createTables
-import io.ktor.server.application.*
-import io.ktor.server.http.content.staticResources
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
 import findee.routes.*
 import findee.templates.*
 import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.*
 import io.ktor.server.html.*
+import io.ktor.server.http.content.staticResources
 import io.ktor.server.plugins.statuspages.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import org.jetbrains.exposed.v1.jdbc.*
 import java.time.*
 
@@ -78,9 +78,14 @@ fun Application.scheduleJobs() {
     val debug = environment.config.property("ktor.debug.debug").getString() == "true"
     if (debug) return
 
-    val hours = environment.config.property("ktor.schedule.hours").getString().toLong()
-    val scheduler = Scheduler {
-        updateSimpleFin()
-    }
+    val hours =
+        environment.config
+            .property("ktor.schedule.hours")
+            .getString()
+            .toLong()
+    val scheduler =
+        Scheduler {
+            updateSimpleFin()
+        }
     scheduler.scheduleAt(LocalTime.MIDNIGHT, Duration.ofHours(hours))
 }

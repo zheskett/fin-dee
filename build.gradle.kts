@@ -60,6 +60,10 @@ application {
 // daemon-managed JavaExec so a file watcher can reliably kill/restart it.
 tasks.register("printRuntimeClasspath") {
     doLast {
-        println(sourceSets.main.get().runtimeClasspath.asPath)
+        println(
+            sourceSets.main
+                .get()
+                .runtimeClasspath.asPath,
+        )
     }
 }

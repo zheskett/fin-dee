@@ -11,12 +11,15 @@ import io.ktor.utils.io.ExperimentalKtorApi
 import kotlinx.html.*
 import java.math.BigDecimal
 
-private val clickStr = """
+private val clickStr =
+    """
     find('next .message-body').classList.toggle('is-hidden');
     find('find i').classList.toggle('fa-chevron-down', 'fa-chevron-right');
-""".trimIndent().replace("\n", "")
+    """.trimIndent().replace("\n", "")
 
-class AccountBox(private val account: Account) : Template<FlowContent> {
+class AccountBox(
+    private val account: Account,
+) : Template<FlowContent> {
     private val textColorClass = calcTextColorClass(account.color)
     private val isNeg = account.balance < BigDecimal.ZERO
     private val balanceStr = moneyFormat.format(account.balance)

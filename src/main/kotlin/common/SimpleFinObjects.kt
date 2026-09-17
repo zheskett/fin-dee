@@ -4,9 +4,9 @@
 
 package findee.common
 
+import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
-import io.ktor.serialization.kotlinx.json.*
 
 @Serializable
 data class SimpleFinError(
@@ -42,7 +42,7 @@ data class SimpleFinAccount(
     @SerialName("available-balance") val availableBalance: String? = null,
     @SerialName("balance-date") val balanceDate: Long,
     val transactions: List<SimpleFinTransaction> = emptyList(),
-    val holdings: List<SimpleFinHolding> = emptyList()
+    val holdings: List<SimpleFinHolding> = emptyList(),
     // extra ignored
 )
 

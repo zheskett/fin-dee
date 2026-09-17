@@ -15,8 +15,10 @@ private const val ID_LEN = 64
 object UpdateTable : Table("updates") {
     val id = integer("id").autoIncrement()
     val httpCode = integer("http_code")
-    val createdAt = timestampWithTimeZone("created_at").index()
-        .defaultExpression(CurrentTimestampWithTimeZone)
+    val createdAt =
+        timestampWithTimeZone("created_at")
+            .index()
+            .defaultExpression(CurrentTimestampWithTimeZone)
 
     override val primaryKey = PrimaryKey(id)
 }
@@ -47,7 +49,6 @@ object ConnectionTable : Table("connections") {
 
     override val primaryKey = PrimaryKey(sfinId)
 }
-
 
 object HoldingUpdateTable : Table("holding_updates") {
     val actId = varchar("act_id", ID_LEN)

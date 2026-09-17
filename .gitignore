@@ -10,6 +10,7 @@ codebook.toml
 # Container Data
 /data/
 /data.*
+*.db
 
 # Env files
 .env

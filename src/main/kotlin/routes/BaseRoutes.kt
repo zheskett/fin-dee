@@ -5,10 +5,10 @@
 package findee.routes
 
 import findee.db.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
 import findee.templates.*
 import io.ktor.server.html.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 
 fun Route.baseRoutes() {
     get("/") {

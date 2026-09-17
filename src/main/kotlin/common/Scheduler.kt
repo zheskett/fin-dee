@@ -11,11 +11,16 @@ import java.time.*
 
 private val LOGGER = KtorSimpleLogger("findee.common.Scheduler")
 
-class Scheduler(val toRun: suspend () -> Unit) {
+class Scheduler(
+    val toRun: suspend () -> Unit,
+) {
     private var job: Job = Job()
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    fun scheduleAt(time: LocalTime, every: Duration) {
+    fun scheduleAt(
+        time: LocalTime,
+        every: Duration,
+    ) {
         runBlocking {
             this@Scheduler.cancel()
         }
@@ -36,8 +41,11 @@ class Scheduler(val toRun: suspend () -> Unit) {
         job.join()
     }
 
-    private fun CoroutineScope.interval(initialInterval: Duration, regularInterval: Duration): Job {
-        return launch {
+    private fun CoroutineScope.interval(
+        initialInterval: Duration,
+        regularInterval: Duration,
+    ): Job =
+        launch {
             var isFirst = true
             while (isActive) {
                 if (isFirst) {
@@ -56,7 +64,4 @@ class Scheduler(val toRun: suspend () -> Unit) {
                 }
             }
         }
-    }
-
-
 }

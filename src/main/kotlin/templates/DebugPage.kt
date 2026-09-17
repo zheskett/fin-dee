@@ -4,10 +4,10 @@
 
 package findee.templates
 
-import io.ktor.server.html.*
-import kotlinx.html.*
 import io.ktor.htmx.html.hx
+import io.ktor.server.html.*
 import io.ktor.utils.io.ExperimentalKtorApi
+import kotlinx.html.*
 
 class DebugPage : Template<FlowContent> {
     @OptIn(ExperimentalKtorApi::class)

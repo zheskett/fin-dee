@@ -18,8 +18,7 @@ RUN gradle buildFatJar --no-daemon
 FROM eclipse-temurin:21-alpine AS runtime
 EXPOSE 6767
 VOLUME ["/data"]
-RUN mkdir /app
-RUN mkdir /data
+RUN mkdir /app && mkdir /data
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/fin-dee.jar
 ENTRYPOINT ["java","-jar","/app/fin-dee.jar"]
 

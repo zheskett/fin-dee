@@ -6,16 +6,17 @@ package findee.common
 
 import java.math.BigDecimal
 
-enum class AccountType(val decode: String) {
+enum class AccountType(
+    val decode: String,
+) {
     CHECKING("Checking"),
     CREDIT_CARD("Credit Card"),
     SAVINGS("Savings"),
     INVESTMENT("Investment"),
-    LOAN("Loan");
+    LOAN("Loan"),
+    ;
 
-    fun isCheckingType(): Boolean {
-        return this == CHECKING || this == CREDIT_CARD
-    }
+    fun isCheckingType(): Boolean = this == CHECKING || this == CREDIT_CARD
 
     companion object {
         fun fromDecode(decode: String): AccountType? {
@@ -36,5 +37,5 @@ data class Account(
     val name: String,
     val alias: String?,
     val color: String,
-    val type: AccountType
+    val type: AccountType,
 )

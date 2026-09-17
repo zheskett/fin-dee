@@ -5,9 +5,9 @@
 package findee.templates
 
 import io.ktor.htmx.html.hx
-import kotlinx.html.*
 import io.ktor.server.html.*
 import io.ktor.utils.io.ExperimentalKtorApi
+import kotlinx.html.*
 
 class Modal : Template<FlowContent> {
     val modalTitle = Placeholder<FlowContent>()

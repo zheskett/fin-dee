@@ -31,7 +31,7 @@ class BaseTemplate : Template<HTML> {
 
         body {
             header("block") {
-                nav("navbar is-primary is-spaced") {
+                nav("navbar is-primary") {
                     div("navbar-brand") {
                         a("/", classes = "navbar-item") {
                             attributes.hx {
@@ -46,23 +46,6 @@ class BaseTemplate : Template<HTML> {
                         }
                     }
                     div("navbar-end") {
-                        div("navbar-item") {
-                            button(classes = "button") {
-                                attributes["hx-disable"] = "this"
-                                attributes["hx-status:4xx"] = "swap:outerHTML"
-                                attributes["hx-status:5xx"] = "swap:outerHTML"
-                                attributes.hx {
-                                    on("before:request", "this.classList.add('is-loading')")
-                                    on("finally:request", "this.classList.remove('is-loading')")
-                                    get = "/modal/update"
-                                    target = "body"
-                                    swap = "beforeend"
-                                }
-                                span("icon") { i("fa-solid fa-rotate") }
-                                span { +"Update" }
-                            }
-                        }
-
                         if (isDebug) {
                             div("navbar-item") {
                                 a("/debug", classes = "button is-danger") {

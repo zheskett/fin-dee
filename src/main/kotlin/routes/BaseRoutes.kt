@@ -12,10 +12,24 @@ import io.ktor.server.routing.*
 
 fun Route.baseRoutes() {
     get("/") {
+        call.respondRedirect("/overview", true)
+    }
+
+    get("/overview") {
         val accounts = getLatestAccounts()
         call.respondHtmlTemplate(BaseTemplate()) {
             insideContent {
-                insert(HomePage(accounts)) {}
+                insert(HomePage(HomePageType.OVERVIEW_PAGE, accounts)) {}
+            }
+        }
+    }
+
+    get("/investments") {
+        // TODO: with holdings
+        val accounts = getLatestAccounts()
+        call.respondHtmlTemplate(BaseTemplate()) {
+            insideContent {
+                insert(HomePage(HomePageType.INVESTMENTS_PAGE, accounts)) {}
             }
         }
     }

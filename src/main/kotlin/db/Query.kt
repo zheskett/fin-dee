@@ -189,6 +189,7 @@ suspend fun getLatestAccounts(): List<Account>? {
                     it[AccountTable.alias],
                     it[AccountTable.color],
                     it[AccountTable.type],
+                    emptyList(),
                 )
             }
     }
@@ -210,6 +211,7 @@ suspend fun getAccountSettings(actId: String): Account? =
                     it[AccountTable.alias],
                     it[AccountTable.color],
                     it[AccountTable.type],
+                    emptyList(),
                 )
             }.firstOrNull()
     }

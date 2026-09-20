@@ -29,6 +29,16 @@ enum class AccountType(
     }
 }
 
+data class Holding(
+    val sfinId: String,
+    val symbol: String,
+    val description: String,
+    val purchasePrice: BigDecimal,
+    val marketValue: BigDecimal,
+    val totalValue: BigDecimal,
+    val shares: BigDecimal,
+)
+
 data class Account(
     val sfinId: String,
     val connId: String,
@@ -38,4 +48,5 @@ data class Account(
     val alias: String?,
     val color: String,
     val type: AccountType,
+    val holdings: List<Holding>,
 )

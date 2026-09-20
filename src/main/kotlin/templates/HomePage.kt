@@ -10,38 +10,48 @@ import io.ktor.server.html.*
 import io.ktor.utils.io.ExperimentalKtorApi
 import kotlinx.html.*
 
-private val sortableLoad =
-    """
-    new Sortable(this, {
-        animation: 150,
-        ghostClass: 'sortable-ghost',
-        handle: '.handle',
-        onEnd: function () { this.option('disabled', true) }
-    })
-    """.trimIndent().replace("\n", "")
-private const val SORTABLE_AFTER = "Sortable.get(this).option('disabled', false)"
+enum class HomePageType(
+    val decode: String,
+) {
+    OVERVIEW_PAGE("Overview"),
+    INVESTMENTS_PAGE("Investments"),
+}
 
 class HomePage(
+    private val page: HomePageType,
     private val accounts: List<Account>?,
 ) : Template<FlowContent> {
     @OptIn(ExperimentalKtorApi::class)
     override fun FlowContent.apply() {
-        insert(OverviewBox(accounts)) {}
-        section("py-4") {}
-        form(classes = "sortable") {
-            attributes["hx-on:load"] = sortableLoad
-            attributes["hx-on::after:swap"] = SORTABLE_AFTER
-            attributes["hx-status:4xx"] = "swap:outerHTML"
-            attributes["hx-status:5xx"] = "swap:outerHTML"
-            attributes.hx {
-                post = "/api/sort"
-                trigger = "end"
-                swap = "none"
-                target = "body"
+        div("container is-max-desktop") {
+            div("tabs is-centered is-max-desktop") {
+                ul {
+                    li(if (page == HomePageType.OVERVIEW_PAGE) "is-active" else "") {
+                        a("/overview") {
+                            attributes.hx {
+                                boost = true
+                            }
+                            +HomePageType.OVERVIEW_PAGE.decode
+                        }
+                    }
+                    li(if (page == HomePageType.INVESTMENTS_PAGE) "is-active" else "") {
+                        a("/investments") {
+                            attributes.hx {
+                                boost = true
+                            }
+                            +HomePageType.INVESTMENTS_PAGE.decode
+                        }
+                    }
+                }
+            }
+        }
+        when (page) {
+            HomePageType.OVERVIEW_PAGE -> {
+                insert(OverviewPage(accounts)) {}
             }
 
-            accounts?.forEach {
-                insert(AccountBox(it)) {}
+            HomePageType.INVESTMENTS_PAGE -> {
+                insert(InvestmentsPage(accounts)) {}
             }
         }
     }

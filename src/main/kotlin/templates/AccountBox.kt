@@ -14,15 +14,16 @@ import java.math.BigDecimal
 private val clickStr =
     """
     find('next .message-body').classList.toggle('is-hidden');
-    find('find i').classList.toggle('fa-chevron-down', 'fa-chevron-right');
+    const icon = find('find i');
+    icon.classList.toggle('fa-chevron-down');
+    icon.classList.toggle('fa-chevron-right');
     """.trimIndent().replace("\n", "")
 
 class AccountBox(
     private val account: Account,
 ) : Template<FlowContent> {
+    val boxBody = Placeholder<FlowContent>()
     private val textColorClass = calcTextColorClass(account.color)
-    private val isNeg = account.balance < BigDecimal.ZERO
-    private val balanceStr = moneyFormat.format(account.balance)
 
     @OptIn(ExperimentalKtorApi::class)
     override fun FlowContent.apply() {
@@ -39,8 +40,8 @@ class AccountBox(
                             +(account.connName)
                         }
                     }
-                    div("handle") {
-                        style = "flex: 0.9; align-self: stretch; margin: -1em 0"
+                    div("handle is-align-self-stretch") {
+                        style = "flex: 0.9; margin: -1em 0; min-width: 3em"
                     }
                     div("field is-grouped") {
                         button(type = ButtonType.button, classes = "button") {
@@ -64,18 +65,7 @@ class AccountBox(
                     }
                 }
                 div("message-body") {
-                    div("key-value grid is-size-5") {
-                        div {
-                            span("icon mr-1") { i("fa-solid fa-sack-dollar") }
-                            span { +"Balance: " }
-                        }
-                        span(if (isNeg) "has-text-danger" else "has-text-primary") { strong { +balanceStr } }
-                        div {
-                            span("icon mr-1") { i("fa-solid fa-chart-simple") }
-                            span { +"Type: " }
-                        }
-                        span { strong { +account.type.decode } }
-                    }
+                    insert(boxBody)
                 }
             }
         }

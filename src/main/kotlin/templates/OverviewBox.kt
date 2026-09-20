@@ -7,7 +7,9 @@ package findee.templates
 import findee.common.Account
 import findee.common.AccountType
 import findee.common.moneyFormat
+import io.ktor.htmx.html.hx
 import io.ktor.server.html.*
+import io.ktor.utils.io.ExperimentalKtorApi
 import kotlinx.html.*
 import java.math.BigDecimal
 
@@ -19,11 +21,12 @@ class OverviewBox(
     private val cvColorClass = if (cvPair.second >= BigDecimal.ZERO) "has-text-primary" else "has-text-danger"
     private val nwColorClass = if (nwPair.second >= BigDecimal.ZERO) "has-text-primary" else "has-text-danger"
 
+    @OptIn(ExperimentalKtorApi::class)
     override fun FlowContent.apply() {
         section("section") {
-            div("block container box is-max-desktop") {
+            div("container box is-max-desktop is-relative") {
                 id = "overview_box"
-                nav("level") {
+                nav("level mb-0") {
                     div("level-item has-text-centered") {
                         div {
                             p("heading") {
@@ -42,6 +45,20 @@ class OverviewBox(
                             p("title $nwColorClass") { +nwPair.first }
                         }
                     }
+                }
+                button(classes = "button") {
+                    style = "position: absolute; top: 0.75rem; right: 0.75rem;"
+                    attributes["hx-disable"] = "this"
+                    attributes["hx-status:4xx"] = "swap:outerHTML"
+                    attributes["hx-status:5xx"] = "swap:outerHTML"
+                    attributes.hx {
+                        on("before:request", "this.classList.add('is-loading')")
+                        on("finally:request", "this.classList.remove('is-loading')")
+                        get = "/modal/update"
+                        target = "body"
+                        swap = "beforeend"
+                    }
+                    span("icon") { i("fa-solid fa-rotate") }
                 }
             }
         }
